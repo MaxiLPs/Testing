@@ -15,13 +15,18 @@ A = [
 	['T','A','A','C','G','T'],
 	['A','C','A','A','G','G']
     ]
+B = [
+	['A'],
+	['A'],
+	['B'],
+	['A']
+	]
+C = [
+	['A','B','A','A']
+	]
 
 genmutante = ['A', 'C', 'T', 'G']
 repeticion = 4
-
-filas = len(A)
-columnas = len(A[0])
-
 
 coorden_mutantes = []
 
@@ -43,65 +48,90 @@ def printMatrizMutante(matriz):
 	        else:
 	       		print(matriz[i][j], end=' ')
 	    print(' ')
+	#coorden_mutantes = ['']
 
 
 def isMutant(matriz):
-	
+
+	filas = len(matriz)
+	columnas = len(matriz[0])
+
+	is_mutant = False
+
+	global coorden_mutantes
+	coorden_mutantes=[]
+
+	print ('filas:', filas, 'columnas:', columnas)
+	print ('')
 	#CONTROLES AQUI #
-	
 	for i in range(0,filas):
 		for j in range(0, columnas):
 			#BUSCA HORIZONTAL
-			if j < columnas-(repeticion-1):
+			if j < columnas-(repeticion-1) and columnas > repeticion-1:
 				#print('i:', i, 'j:', j)
 				#print('i:', i, 'j+0:', j+0, ' ->', matriz[i][j+0])
 				#print('i:', i, 'j+1:', j+1, ' ->', matriz[i][j+1])
 				#print('i:', i, 'j+2:', j+2, ' ->', matriz[i][j+2])
 				#print('i:', i, 'j+3:', j+3, ' ->', matriz[i][j+3])
 				if ( matriz[i][j] == matriz[i][j+1] and matriz[i][j] == matriz[i][j+2] and matriz[i][j] == matriz[i][j+3]):
+					is_mutant = True
 					coorden_mutantes.append([i,j+0])
 					coorden_mutantes.append([i,j+1])
 					coorden_mutantes.append([i,j+2])
 					coorden_mutantes.append([i,j+3])
 			#BUSCA VERTICAL
-			if i < filas-(repeticion-1):
+			if i < filas-(repeticion-1) and filas > repeticion-1:
 				#print('i+0:', i+0, 'j:', j, ' ->', matriz[i+0][j])
 				#print('i+1:', i+1, 'j:', j, ' ->', matriz[i+1][j])
 				#print('i+2:', i+2, 'j:', j, ' ->', matriz[i+2][j])
 				#print('i+3:', i+3, 'j:', j, ' ->', matriz[i+3][j])
 				if ( matriz[i][j] == matriz[i+1][j] and matriz[i][j] == matriz[i+2][j] and matriz[i][j] == matriz[i+3][j]):
+					is_mutant = True
 					coorden_mutantes.append([i+0,j])
 					coorden_mutantes.append([i+1,j])
 					coorden_mutantes.append([i+2,j])
 					coorden_mutantes.append([i+3,j])
 			#BUSCA DIAGONAL DESCENDIENTE
-			if i < filas-(repeticion-1) and j < columnas-(repeticion-1):
+			if i < filas-(repeticion-1) and j < columnas-(repeticion-1) and filas > repeticion and columnas > repeticion:
 				#print('i+0:', i+0, 'j+0:', j+0, ' ->', matriz[i+0][j+0])
 				#print('i+1:', i+1, 'j+1:', j+1, ' ->', matriz[i+1][j+1])
 				#print('i+2:', i+2, 'j+2:', j+2, ' ->', matriz[i+2][j+2])
 				#print('i+3:', i+3, 'j+3:', j+3, ' ->', matriz[i+3][j+3])
 				if ( matriz[i][j] == matriz[i+1][j+1] and matriz[i][j] == matriz[i+2][j+2] and matriz[i][j] == matriz[i+3][j+3]):
+					is_mutant = True
 					coorden_mutantes.append([i+0,j+0])
 					coorden_mutantes.append([i+1,j+1])
 					coorden_mutantes.append([i+2,j+2])
 					coorden_mutantes.append([i+3,j+3])
 			#BUSCA DIAGONAL DESCENDIENTE
-			if j >= columnas-(repeticion) and i <= filas-(repeticion):
+			if j >= columnas-(repeticion) and i <= filas-(repeticion) and filas > repeticion and columnas > repeticion:
 				#print('i+0:', i+0, 'j-0:', j-0, ' ->', matriz[i+0][j-0])
 				#print('i+1:', i+1, 'j-1:', j-1, ' ->', matriz[i+1][j-1])
 				#print('i+2:', i+2, 'j-2:', j-2, ' ->', matriz[i+2][j-2])
 				#print('i+3:', i+3, 'j-3:', j-3, ' ->', matriz[i+3][j-3])
 				if ( matriz[i][j] == matriz[i+1][j-1] and matriz[i][j] == matriz[i+2][j-2] and matriz[i][j] == matriz[i+3][j-3]):
+					is_mutant = True
 					coorden_mutantes.append([i+0,j-0])
 					coorden_mutantes.append([i+1,j-1])
 					coorden_mutantes.append([i+2,j-2])
 					coorden_mutantes.append([i+3,j-3])
+	
+	printMatrizMutante(matriz)
+	
+	if is_mutant:
+		print('Es mutante')
+		return True
+	else:
+		print('No es mutante')
+		return False
 
-print ('filas:', filas, 'columnas:', columnas)
 
-printMatrizMutante(A)
+#printMatrizMutante(B)
 
-print('------------')
-isMutant(A)
-print('------------')
-printMatrizMutante(A)
+#print('------------')
+#print('el resultado es:', isMutant(C))
+#print('------------')
+#print('el resultado es:', isMutant(A))
+#print('------------')
+#print('el resultado es:', isMutant(C))
+#print('------------')
