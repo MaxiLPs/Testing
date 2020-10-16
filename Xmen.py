@@ -2,7 +2,36 @@
 # Probando el gen mutante
 from __future__ import print_function
 from termcolor import colored
+import json
 import sys
+import logging
+
+genmutante = ['A', 'C', 'T', 'G']
+repeticion = 4
+coorden_mutantes = []
+resultado = False
+
+codigo = {
+		"NoCode": 0,
+		"OK": 200,
+		"Created": 201,
+		"Error": 400
+		}
+
+status_code =	{
+				"NoCode": "NoCode",
+				"OK": "OK",
+				"P_Error": "Param Error",
+				"T_Error": "Type Error"
+				}
+
+responseJSON =	{
+				"code": None ,
+  				"is_mutant": None,
+				"status": None
+				}
+
+
 
 
 A = [
@@ -26,13 +55,10 @@ C = [
 	['A','B','A','A']
 	]
 
-dna = ["AAAA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+dna = ["AABBAA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
 
 
-genmutante = ['A', 'C', 'T', 'G']
-repeticion = 4
 
-coorden_mutantes = []
 
 
 def printMatrizMutante(matriz):
@@ -63,23 +89,33 @@ def paramValidator(C):
 		for i in range(0, len(C)):
 			if len(C[i]) >= repeticion:
 				if control_range != len(C[i]):
+					responseJSON["status"] = status_code["P_Error"]
 					print('Los valores ingresados deben tener la misma cantidad de caracteres')
 					return False
 			else:
+				responseJSON["status"] = status_code["P_Error"]
 				print ('En el indice:', i, 'cuenta con:', len(C[i]), 'caracteres. Se espera', repeticion, ' caracteres como minimo, para la busqueda del gen mutante')
 				#print ('La cantidad minima esperada para la busqueda es:', repeticion)
 				return False
 		print ('Exito')
+		responseJSON["status"] = status_code["OK"]
 		return True
 	else: 
-	    print('Error: Se espera una lista')
-	    return False
+	    
+		responseJSON["status"] = status_code["T_Error"]
+		responseJSON["code"] = codigo["Error"]
+		
+		print (json.dumps(responseJSON,sort_keys=True))
+		return False
+		#return json.dumps(responseJSON)
+	    #print('Error: Se espera una lista')
+	    
 
 
 def isMutant(dna):
 
-	if not paramValidator(dna):
-		return False
+	#if not paramValidator(dna):
+	#	return False
 
 	matriz = [list(sub) for sub in dna]
 	is_mutant = False
@@ -144,15 +180,33 @@ def isMutant(dna):
 					coorden_mutantes.append([i+3,j-3])
 	
 	printMatrizMutante(matriz)
-	
+	print (json.dumps(responseJSON))
+	responseJSON["is_mutant"]= is_mutant
+	print (json.dumps(responseJSON))
+	return is_mutant
+'''	
 	if is_mutant:
 		print('Es mutante')
 		return is_mutant
 	else:
-		print('No es mutante')
+		#print('No es mutante')
 		return is_mutant
+'''
 
-isMutant(dna) 
+
+
+
+
+resultado = paramValidator(2)#dna)
+
+log = logging.getLogger("my-logger")
+log.info("Hello, world")
+
+if resultado:
+	resultado = isMutant(dna)
+	print('Es Mutante') if resultado else print('No es mutante')
+else:
+	print('verifique los errores mencionados anteriormetne')
 
 
 #isMutant(sys.argv[1])
