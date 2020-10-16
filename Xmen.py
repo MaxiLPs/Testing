@@ -2,6 +2,7 @@
 # Probando el gen mutante
 from __future__ import print_function
 from termcolor import colored
+import sys
 
 
 A = [
@@ -14,7 +15,7 @@ A = [
 	['T','C','A','G','G','T'],
 	['T','A','A','C','G','T'],
 	['A','C','A','A','G','G']
-    ]
+	]
 B = [
 	['A'],
 	['A'],
@@ -24,6 +25,9 @@ B = [
 C = [
 	['A','B','A','A']
 	]
+
+dna = ["AAAA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+
 
 genmutante = ['A', 'C', 'T', 'G']
 repeticion = 4
@@ -50,14 +54,37 @@ def printMatrizMutante(matriz):
 	    print(' ')
 	#coorden_mutantes = ['']
 
+def paramValidator(C):
 
-def isMutant(matriz):
+	if isinstance(C, list): 
+		control_range= len(C[0])
+		#print(control_range)
 
+		for i in range(0, len(C)):
+			if len(C[i]) >= repeticion:
+				if control_range != len(C[i]):
+					print('Los valores ingresados deben tener la misma cantidad de caracteres')
+					return False
+			else:
+				print ('En el indice:', i, 'cuenta con:', len(C[i]), 'caracteres. Se espera', repeticion, ' caracteres como minimo, para la busqueda del gen mutante')
+				#print ('La cantidad minima esperada para la busqueda es:', repeticion)
+				return False
+		print ('Exito')
+		return True
+	else: 
+	    print('Error: Se espera una lista')
+	    return False
+
+
+def isMutant(dna):
+
+	if not paramValidator(dna):
+		return False
+
+	matriz = [list(sub) for sub in dna]
+	is_mutant = False
 	filas = len(matriz)
 	columnas = len(matriz[0])
-
-	is_mutant = False
-
 	global coorden_mutantes
 	coorden_mutantes=[]
 
@@ -67,7 +94,7 @@ def isMutant(matriz):
 	for i in range(0,filas):
 		for j in range(0, columnas):
 			#BUSCA HORIZONTAL
-			if j < columnas-(repeticion-1) and columnas > repeticion-1:
+			if j < columnas-(repeticion-1): # and columnas > repeticion-1:
 				#print('i:', i, 'j:', j)
 				#print('i:', i, 'j+0:', j+0, ' ->', matriz[i][j+0])
 				#print('i:', i, 'j+1:', j+1, ' ->', matriz[i][j+1])
@@ -80,7 +107,7 @@ def isMutant(matriz):
 					coorden_mutantes.append([i,j+2])
 					coorden_mutantes.append([i,j+3])
 			#BUSCA VERTICAL
-			if i < filas-(repeticion-1) and filas > repeticion-1:
+			if i < filas-(repeticion-1): # and filas > repeticion-1:
 				#print('i+0:', i+0, 'j:', j, ' ->', matriz[i+0][j])
 				#print('i+1:', i+1, 'j:', j, ' ->', matriz[i+1][j])
 				#print('i+2:', i+2, 'j:', j, ' ->', matriz[i+2][j])
@@ -92,7 +119,7 @@ def isMutant(matriz):
 					coorden_mutantes.append([i+2,j])
 					coorden_mutantes.append([i+3,j])
 			#BUSCA DIAGONAL DESCENDIENTE
-			if i < filas-(repeticion-1) and j < columnas-(repeticion-1) and filas > repeticion and columnas > repeticion:
+			if i < filas-(repeticion-1) and j < columnas-(repeticion-1): # and filas > repeticion and columnas > repeticion:
 				#print('i+0:', i+0, 'j+0:', j+0, ' ->', matriz[i+0][j+0])
 				#print('i+1:', i+1, 'j+1:', j+1, ' ->', matriz[i+1][j+1])
 				#print('i+2:', i+2, 'j+2:', j+2, ' ->', matriz[i+2][j+2])
@@ -104,7 +131,7 @@ def isMutant(matriz):
 					coorden_mutantes.append([i+2,j+2])
 					coorden_mutantes.append([i+3,j+3])
 			#BUSCA DIAGONAL DESCENDIENTE
-			if j >= columnas-(repeticion) and i <= filas-(repeticion) and filas > repeticion and columnas > repeticion:
+			if j >= columnas-(repeticion) and i <= filas-(repeticion):# and filas > repeticion and columnas > repeticion:
 				#print('i+0:', i+0, 'j-0:', j-0, ' ->', matriz[i+0][j-0])
 				#print('i+1:', i+1, 'j-1:', j-1, ' ->', matriz[i+1][j-1])
 				#print('i+2:', i+2, 'j-2:', j-2, ' ->', matriz[i+2][j-2])
@@ -120,11 +147,15 @@ def isMutant(matriz):
 	
 	if is_mutant:
 		print('Es mutante')
-		return True
+		return is_mutant
 	else:
 		print('No es mutante')
-		return False
+		return is_mutant
 
+isMutant(dna) 
+
+
+#isMutant(sys.argv[1])
 
 #printMatrizMutante(B)
 
