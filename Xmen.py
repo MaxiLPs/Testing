@@ -52,6 +52,8 @@ C = [
 	['A','B','A','A']
 	]
 
+G = []
+
 dna = ["AABBAA","CAGGGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
 
 
@@ -94,21 +96,20 @@ class MutantService(object):
 	@staticmethod
 	def printMatrizMutante(matriz):
 		for i in range(len(matriz)):
-		    for j in range(len(matriz[i])):
-		        x = matriz[i][j]
-		        
-		        if  [i,j] in MutantService.coorden_mutantes:
-		        	if matriz[i][j] == MutantService.genmutante[0]:
-		         		print (colored(matriz[i][j], 'green'), end=' ')
-		         	elif matriz[i][j] == MutantService.genmutante[1]:
-		         		print (colored(matriz[i][j], 'red'), end=' ')
-		         	elif matriz[i][j] == MutantService.genmutante[2]:
-		         		print (colored(matriz[i][j], 'blue'), end=' ')
-		         	else:
-		         		print (colored(matriz[i][j], 'cyan'), end=' ')
-		        else:
-		       		print(matriz[i][j], end=' ')
-		    print(' ')
+			for j in range(len(matriz[i])):
+				x = matriz[i][j]
+				
+				if  [i,j] in MutantService.coorden_mutantes:
+					if matriz[i][j] == MutantService.genmutante[0]:
+						print (colored(matriz[i][j], 'green'), end=' ')
+					elif matriz[i][j] == MutantService.genmutante[1]:
+						print (colored(matriz[i][j], 'red'), end=' ')
+					elif matriz[i][j] == MutantService.genmutante[2]:
+						print (colored(matriz[i][j], 'blue'), end=' ')
+					else:
+						print (colored(matriz[i][j], 'cyan'), end=' ')
+				else:
+					print(matriz[i][j], end=' ')
 
 	@staticmethod
 	def isMutant(dna):
@@ -188,12 +189,12 @@ responseJSON = {
 				}
 
 
-a_buscar=B
+a_buscar=G
 
 responseJSON["code"], responseJSON["status"] = ValidateService.paramValidator(a_buscar)
 
 
-if responseJSON["status"]== status_code["OK"]:
+if responseJSON["status"] == status_code["OK"]:
 	responseJSON["is_mutant"] = MutantService.isMutant(a_buscar)
 	print('Es Mutante') if responseJSON["is_mutant"] else print('No es mutante')
 else:
