@@ -196,8 +196,8 @@ responseJSON["code"], responseJSON["status"] = ValidateService.paramValidator(a_
 
 if responseJSON["status"] == status_code["OK"]:
 	responseJSON["is_mutant"] = MutantService.isMutant(a_buscar)
-	print('Es Mutante') if responseJSON["is_mutant"] else print('No es mutante')
-else:
-	print('UPS! Algo salio mal')
+#	print('Es Mutante') if responseJSON["is_mutant"] else print('No es mutante')
+#else:
+#	print('UPS! Algo salio mal')
 
 print(json.dumps(responseJSON))
