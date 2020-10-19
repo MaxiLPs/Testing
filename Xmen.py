@@ -6,9 +6,7 @@ import json
 import sys
 import logging
 
-genmutante = ['A', 'C', 'T', 'G']
-repeticion = 4
-coorden_mutantes = []
+
 resultado = False
 
 codigo = {
@@ -33,7 +31,6 @@ responseJSON =	{
 
 
 
-
 A = [
 	['A','T','G','C','G','A'],
 	['C','A','G','T','G','C'],
@@ -48,175 +45,158 @@ A = [
 B = [
 	['A'],
 	['A'],
-	['B'],
+	['A'],
 	['A']
 	]
 C = [
 	['A','B','A','A']
 	]
 
-dna = ["AABBAA","CAGTGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
+dna = ["AABBAA","CAGGGC","TTATGT","AGAAGG","CCCCTA","TCACTG"]
 
 
 
-
-
-def printMatrizMutante(matriz):
-	for i in range(len(matriz)):
-	    for j in range(len(matriz[i])):
-	        x = matriz[i][j]
-	        
-	        if  [i,j] in coorden_mutantes:
-	        	if matriz[i][j] == genmutante[0]:
-	         		print (colored(matriz[i][j], 'green'), end=' ')
-	         	elif matriz[i][j] == genmutante[1]:
-	         		print (colored(matriz[i][j], 'red'), end=' ')
-	         	elif matriz[i][j] == genmutante[2]:
-	         		print (colored(matriz[i][j], 'blue'), end=' ')
-	         	else:
-	         		print (colored(matriz[i][j], 'cyan'), end=' ')
-	        else:
-	       		print(matriz[i][j], end=' ')
-	    print(' ')
-	#coorden_mutantes = ['']
-
-def paramValidator(C):
-
-	if isinstance(C, list): 
-		control_range= len(C[0])
-		#print(control_range)
-
-		for i in range(0, len(C)):
-			if len(C[i]) >= repeticion:
-				if control_range != len(C[i]):
-					responseJSON["status"] = status_code["P_Error"]
-					print('Los valores ingresados deben tener la misma cantidad de caracteres')
-					return False
-			else:
-				responseJSON["status"] = status_code["P_Error"]
-				print ('En el indice:', i, 'cuenta con:', len(C[i]), 'caracteres. Se espera', repeticion, ' caracteres como minimo, para la busqueda del gen mutante')
-				#print ('La cantidad minima esperada para la busqueda es:', repeticion)
-				return False
-		print ('Exito')
-		responseJSON["status"] = status_code["OK"]
-		return True
-	else: 
-	    
-		responseJSON["status"] = status_code["T_Error"]
-		responseJSON["code"] = codigo["Error"]
-		
-		print (json.dumps(responseJSON,sort_keys=True))
-		return False
-		#return json.dumps(responseJSON)
-	    #print('Error: Se espera una lista')
-	    
-
-
-def isMutant(dna):
-
-	#if not paramValidator(dna):
-	#	return False
-
-	matriz = [list(sub) for sub in dna]
-	is_mutant = False
-	filas = len(matriz)
-	columnas = len(matriz[0])
-	global coorden_mutantes
-	coorden_mutantes=[]
-
-	print ('filas:', filas, 'columnas:', columnas)
-	print ('')
-	#CONTROLES AQUI #
-	for i in range(0,filas):
-		for j in range(0, columnas):
-			#BUSCA HORIZONTAL
-			if j < columnas-(repeticion-1): # and columnas > repeticion-1:
-				#print('i:', i, 'j:', j)
-				#print('i:', i, 'j+0:', j+0, ' ->', matriz[i][j+0])
-				#print('i:', i, 'j+1:', j+1, ' ->', matriz[i][j+1])
-				#print('i:', i, 'j+2:', j+2, ' ->', matriz[i][j+2])
-				#print('i:', i, 'j+3:', j+3, ' ->', matriz[i][j+3])
-				if ( matriz[i][j] == matriz[i][j+1] and matriz[i][j] == matriz[i][j+2] and matriz[i][j] == matriz[i][j+3]):
-					is_mutant = True
-					coorden_mutantes.append([i,j+0])
-					coorden_mutantes.append([i,j+1])
-					coorden_mutantes.append([i,j+2])
-					coorden_mutantes.append([i,j+3])
-			#BUSCA VERTICAL
-			if i < filas-(repeticion-1): # and filas > repeticion-1:
-				#print('i+0:', i+0, 'j:', j, ' ->', matriz[i+0][j])
-				#print('i+1:', i+1, 'j:', j, ' ->', matriz[i+1][j])
-				#print('i+2:', i+2, 'j:', j, ' ->', matriz[i+2][j])
-				#print('i+3:', i+3, 'j:', j, ' ->', matriz[i+3][j])
-				if ( matriz[i][j] == matriz[i+1][j] and matriz[i][j] == matriz[i+2][j] and matriz[i][j] == matriz[i+3][j]):
-					is_mutant = True
-					coorden_mutantes.append([i+0,j])
-					coorden_mutantes.append([i+1,j])
-					coorden_mutantes.append([i+2,j])
-					coorden_mutantes.append([i+3,j])
-			#BUSCA DIAGONAL DESCENDIENTE
-			if i < filas-(repeticion-1) and j < columnas-(repeticion-1): # and filas > repeticion and columnas > repeticion:
-				#print('i+0:', i+0, 'j+0:', j+0, ' ->', matriz[i+0][j+0])
-				#print('i+1:', i+1, 'j+1:', j+1, ' ->', matriz[i+1][j+1])
-				#print('i+2:', i+2, 'j+2:', j+2, ' ->', matriz[i+2][j+2])
-				#print('i+3:', i+3, 'j+3:', j+3, ' ->', matriz[i+3][j+3])
-				if ( matriz[i][j] == matriz[i+1][j+1] and matriz[i][j] == matriz[i+2][j+2] and matriz[i][j] == matriz[i+3][j+3]):
-					is_mutant = True
-					coorden_mutantes.append([i+0,j+0])
-					coorden_mutantes.append([i+1,j+1])
-					coorden_mutantes.append([i+2,j+2])
-					coorden_mutantes.append([i+3,j+3])
-			#BUSCA DIAGONAL DESCENDIENTE
-			if j >= columnas-(repeticion) and i <= filas-(repeticion):# and filas > repeticion and columnas > repeticion:
-				#print('i+0:', i+0, 'j-0:', j-0, ' ->', matriz[i+0][j-0])
-				#print('i+1:', i+1, 'j-1:', j-1, ' ->', matriz[i+1][j-1])
-				#print('i+2:', i+2, 'j-2:', j-2, ' ->', matriz[i+2][j-2])
-				#print('i+3:', i+3, 'j-3:', j-3, ' ->', matriz[i+3][j-3])
-				if ( matriz[i][j] == matriz[i+1][j-1] and matriz[i][j] == matriz[i+2][j-2] and matriz[i][j] == matriz[i+3][j-3]):
-					is_mutant = True
-					coorden_mutantes.append([i+0,j-0])
-					coorden_mutantes.append([i+1,j-1])
-					coorden_mutantes.append([i+2,j-2])
-					coorden_mutantes.append([i+3,j-3])
+class ValidateService(object):
 	
-	printMatrizMutante(matriz)
-	print (json.dumps(responseJSON))
-	responseJSON["is_mutant"]= is_mutant
-	print (json.dumps(responseJSON))
-	return is_mutant
-'''	
-	if is_mutant:
-		print('Es mutante')
-		return is_mutant
-	else:
-		#print('No es mutante')
-		return is_mutant
-'''
+	repeticion = 4	
+
+	@staticmethod
+	def paramValidator(lista):
+		try:
+			if not type(lista) is list:
+				raise TypeError ('Se espera una lista')
+
+			control_range = len(lista[0])
+			for i in range(0, len(lista)):
+				if len(lista[i]) < ValidateService.repeticion and len(lista) < ValidateService.repeticion:
+					raise IndexError('Longitud menor a la cantidad de repeticion')
+				if control_range != len(lista[i]):
+					raise IndexError('Diferentes rangos en las filas de la matriz')
+			
+			return codigo["OK"], status_code["OK"]
+			
+		except TypeError:
+			#cuando se espera una lista
+			#print ('Error de tipo')
+			return codigo["Error"], status_code["T_Error"]
+		except IndexError:
+			#cuando la matriz tiene distintos tamanos de filas
+			#cuando las filas son menor a la cantidad deseada de busqueda
+			#print ('Fuera de rango')
+			return codigo["OK"], status_code["P_Error"]
+
+class MutantService(object):
+	
+	genmutante = ['A', 'C', 'T', 'G']
+	coorden_mutantes = []
+	repeticion = 4
+
+	@staticmethod
+	def printMatrizMutante(matriz):
+		for i in range(len(matriz)):
+		    for j in range(len(matriz[i])):
+		        x = matriz[i][j]
+		        
+		        if  [i,j] in MutantService.coorden_mutantes:
+		        	if matriz[i][j] == MutantService.genmutante[0]:
+		         		print (colored(matriz[i][j], 'green'), end=' ')
+		         	elif matriz[i][j] == MutantService.genmutante[1]:
+		         		print (colored(matriz[i][j], 'red'), end=' ')
+		         	elif matriz[i][j] == MutantService.genmutante[2]:
+		         		print (colored(matriz[i][j], 'blue'), end=' ')
+		         	else:
+		         		print (colored(matriz[i][j], 'cyan'), end=' ')
+		        else:
+		       		print(matriz[i][j], end=' ')
+		    print(' ')
+
+	@staticmethod
+	def isMutant(dna):
+		matriz = [list(sub) for sub in dna]
+		is_mutant = False
+		filas = len(matriz)
+		columnas = len(matriz[0])
+		MutantService.coorden_mutantes=[]
+
+		#print ('filas:', filas, 'columnas:', columnas)
+
+		for i in range(0,filas):
+			for j in range(0, columnas):
+				#BUSCA HORIZONTAL
+				if j < columnas-(MutantService.repeticion-1):
+					if ( matriz[i][j] == matriz[i][j+1] and matriz[i][j] == matriz[i][j+2] and matriz[i][j] == matriz[i][j+3]):
+						return True
+						"""
+						
+						#codigo por si hay que imprimir la matriz
+
+						is_mutant = True
+						MutantService.coorden_mutantes.append([i,j+0])
+						MutantService.coorden_mutantes.append([i,j+1])
+						MutantService.coorden_mutantes.append([i,j+2])
+						MutantService.coorden_mutantes.append([i,j+3])
+						"""
+				#BUSCA VERTICAL
+				if i < filas-(MutantService.repeticion-1):
+					if ( matriz[i][j] == matriz[i+1][j] and matriz[i][j] == matriz[i+2][j] and matriz[i][j] == matriz[i+3][j]):
+						return True
+						"""
+						
+						#codigo por si hay que imprimir la matriz
+
+						is_mutant = True
+						MutantService.coorden_mutantes.append([i+0,j])
+						MutantService.coorden_mutantes.append([i+1,j])
+						MutantService.coorden_mutantes.append([i+2,j])
+						MutantService.coorden_mutantes.append([i+3,j])
+						"""
+				#BUSCA DIAGONAL DESCENDIENTE
+				if i < filas-(MutantService.repeticion-1) and j < columnas-(MutantService.repeticion-1):
+					if ( matriz[i][j] == matriz[i+1][j+1] and matriz[i][j] == matriz[i+2][j+2] and matriz[i][j] == matriz[i+3][j+3]):
+						return True
+						"""
+						
+						#codigo por si hay que imprimir la matriz
+
+						is_mutant = True
+						MutantService.coorden_mutantes.append([i+0,j+0])
+						MutantService.coorden_mutantes.append([i+1,j+1])
+						MutantService.coorden_mutantes.append([i+2,j+2])
+						MutantService.coorden_mutantes.append([i+3,j+3])
+						"""
+				#BUSCA DIAGONAL DESCENDIENTE
+				if j >= columnas-(MutantService.repeticion) and i <= filas-(MutantService.repeticion) and columnas > MutantService.repeticion:
+					if ( matriz[i][j] == matriz[i+1][j-1] and matriz[i][j] == matriz[i+2][j-2] and matriz[i][j] == matriz[i+3][j-3]):
+						return True
+						"""
+						
+						#codigo por si hay que imprimir la matriz
+
+						is_mutant = True
+						MutantService.coorden_mutantes.append([i+0,j-0])
+						MutantService.coorden_mutantes.append([i+1,j-1])
+						MutantService.coorden_mutantes.append([i+2,j-2])
+						MutantService.coorden_mutantes.append([i+3,j-3])
+						"""		
+		#MutantService.printMatrizMutante(matriz)	
+		return False
+
+responseJSON = {
+				"code": status_code["OK"],
+  				"is_mutant": False,
+				"status": status_code["OK"]
+				}
 
 
+a_buscar=B
+
+responseJSON["code"], responseJSON["status"] = ValidateService.paramValidator(a_buscar)
 
 
-
-resultado = paramValidator(2)#dna)
-
-log = logging.getLogger("my-logger")
-log.info("Hello, world")
-
-if resultado:
-	resultado = isMutant(dna)
-	print('Es Mutante') if resultado else print('No es mutante')
+if responseJSON["status"]== status_code["OK"]:
+	responseJSON["is_mutant"] = MutantService.isMutant(a_buscar)
+	print('Es Mutante') if responseJSON["is_mutant"] else print('No es mutante')
 else:
-	print('verifique los errores mencionados anteriormetne')
+	print('UPS! Algo salio mal')
 
-
-#isMutant(sys.argv[1])
-
-#printMatrizMutante(B)
-
-#print('------------')
-#print('el resultado es:', isMutant(C))
-#print('------------')
-#print('el resultado es:', isMutant(A))
-#print('------------')
-#print('el resultado es:', isMutant(C))
-#print('------------')
+print(json.dumps(responseJSON))
