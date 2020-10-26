@@ -29,7 +29,7 @@ responseJSON =	{
 
 api = Flask(__name__)
 
-@api.route('/companies', methods=['POST'])
+@api.route('/mutant', methods=['POST'])
 def get_companies():
 	#adn = json.loads(request.data)
 	#adn = json.dumps(adn["dna"])

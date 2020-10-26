@@ -39,4 +39,4 @@ class ValidateService(object):
 			#cuando la matriz tiene distintos tamanos de filas
 			#cuando las filas son menor a la cantidad deseada de busqueda
 			#print ('Fuera de rango')
-			return codigo["OK"], status_code["P_Error"]
+			return codigo["Error"], status_code["P_Error"]
